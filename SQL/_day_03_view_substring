@@ -1,0 +1,148 @@
+CREATE VIEW emp_403
+AS     SELECT emloyee_number
+						 ,last_name
+						 ,salary_amount
+			 FROM employee
+			 WHERE department_number=403;
+			 
+
+CREATE VIEW employee_call
+AS SELECT employee.employee_number
+,last_name
+,first_name
+,call_number
+,call_status_code
+,assigned_date
+,assigned_time
+,finished_date
+,finished_time
+FROM employee
+		 INNER JOIN call_employee
+ON call_employee.employee_number=employee.employee_number;
+
+
+CREATE VIEW shortcut (emp, dept, last, first, sal)
+AS SELECT employee_number
+,department_number
+,last_name
+,first_name
+,salary_amount
+FROM employee
+WHERE department_number = 201;
+
+
+SELECT last
+,sal
+FROM shortcut
+ORDER BY last DESC;
+
+
+UPDATE shortcut
+SET  sal = 100000.00
+WHERE emp=1019;
+
+
+.EXPORT REPORT FILE = shortcut.ddl
+SHOW VIEW shortcut
+
+CREATE VIEW shortcut(emp, dept, last, first, sal)
+AS  SELECT employee_number
+          ,department_number
+          ,last_name
+          ,first_name
+          ,salary_amount
+    FROM employee
+    WHERE department_number = 201;
+    
+ 
+REPLACE VIEW shortcut (emp, dept, last, first, sal)
+AS SELECT employee_number
+,department_number
+,last_name
+,first_name
+,salary_amount
+FROM employee
+WHERE department_number = 301;
+
+
+CREATE VIEW Report 
+AS 
+SELECT employee_number    AS Emp(FORMAT '9999')
+      ,deparment_number   AS dept(FORMAT '999')
+      ,last_name				  AS Last(TITLE 'Name')
+      ,first_name         AS First(TITLE '')
+      ,salary_amount / 12 AS Monthly_Salary(FORMAT '$$$,$$9.99')
+FROM employee
+WHERE department_number = 201;
+
+SELECT *
+FROM report
+ORDER BY monthly_salary;
+
+
+CREATE VIEW deptsals
+AS SELECT department_number AS department
+,SUM (salary_amount) AS salary_total
+,AVG (salary_amount) AS salary_average
+,MAX (salary_amount) AS salary_max
+,MIN (salary_amount) AS salary_min
+FROM employee
+GROUP BY department_number;
+
+REPLACE VIEW deptsals
+AS SELECT department_number AS department
+,SUM (salary_amount) AS salary_total
+,AVG (salary_amount) AS salary_average
+,MAX (salary_amount) AS salary_max
+,MIN (salary_amount) AS salary_min
+FROM employee
+GROUP BY department_number
+HAVING AVG(salary_amount) < 36000 ;
+
+***********************************************************************************************
+
+SELECT SUBSTRING('catalog' FROM 5 FOR 3);
+
+SELECT SUBSTRING(first_name FROM 1 FOR 1)(TITLE 'FI')
+      ,last_name
+FROM  employee
+WHERE department_number=403
+ORDER BY last_name;
+
+SELECT DISTINCT
+       SUBSTRING(area_code FROM 4 FOR 3) AS AREA_CODE
+FROM location_phone
+ORDER BY 1;
+
+SELECT customer_number
+      ,zip_code  (FORMAT '9(9)')
+FROM location
+WHERE SUBSTRING(zip_code FROM 8 FOR 4)='0000';
+
+
+SELECT first_name|| ' ' ||last_name (TITLE 'EMPLOYEE')
+FROM employee
+WHERE department_number = 403;
+
+SELECT SUBSTRING(first_name FROM 1 FOR 1)||'. '||last_name (TITLE 'EMPLOYEE')
+FROM employee
+WHERE department_number=403;
+
+SELECT TRIM (last_name) || ', '|| first_name ( TITLE 'EMPLOYEE')
+FROM employee
+WHERE department_number = 403;
+
+SELECT INDEX('abc', 'b');
+
+SELECT department_name
+      ,INDEX(department_name,'SUPPORT')
+FROM department
+WHERE INDEX (department_name,'SUPPORT')>0
+ORDER BY department_number;
+
+SELECT 
+  SUBSTRING(contact_name, FROM INDEX(contact_name,',')+2)
+  ||' '||SUBSTRING(contact_name FROM 1 FOR INDEX(contact_name,',')-1)
+  (TITLE 'Contact Names')
+FROM contact;
+

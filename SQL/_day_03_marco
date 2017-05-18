@@ -1,0 +1,74 @@
+CREATE MACRO dept_list(detpt INTEGER)
+AS 
+(SELECT last_name
+FROM employee
+WHERE department_number =: detpt);
+
+
+CREATE MACRO new_dept
+			(dept INTEGER
+			,budget DEC(10,2) DEFAULT 0
+			,name CHAR(30)
+			,mgr INTEGER)
+AS
+(INSERT INTO department
+             (department_number
+             ,department_name
+             ,budget_amount
+             ,manager_employee_number)
+        VALUES(:dept
+              ,:name
+              ,:budget
+              ,:mgr);
+SELECT department_number  (TITLE 'number')
+      ,department_name    (TITLE 'name')
+      ,department_amount  (TITLE 'budget')
+      ,manager_employee_number  (TITLE 'manager')
+FROM department
+WHERE department_number =: dept;              
+);
+
+
+CREATE MACRO new_employee
+(number INTEGER
+,MGR    INTEGER
+,dept   INTEGER
+,job    INTEGER
+,lastname    CHAR(20)
+,firstname   VARCHAR(30)
+,hired  DATE
+,birth  DATE
+,salary DECIMAL(10,2))
+AS
+(ROLLBACK WORK 'Invlid Hire'
+WHERE (:hired-:birth)/365<21;
+WHERE :dept NOT IN
+			(SELECT department_number
+			FROM department
+			WHERE department_number=:dept);
+ROLLBACK WORK 'Invalid Job Code'
+WHERE :job NOT IN
+			(SELECT job_code
+			FROM job
+			WHERE job_code=:job);
+INSERT INTO employee
+	(employee_number
+	,manager_emplyee_number
+	,department_number
+	,job_code
+	,last_name
+	,first_name
+	,hire_date
+	,birthdate
+	,salary_amount)
+VALUES
+  (:number
+  ,:mgr
+  ,:dept
+  ,:job
+  ,:lastname
+  ,:firstname
+  ,:hired
+  ,:birth
+  ,:salary);
+);

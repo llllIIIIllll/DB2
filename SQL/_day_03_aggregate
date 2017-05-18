@@ -1,0 +1,27 @@
+﻿SELECT first_name
+      ,last_name
+      ,'employee' (TITLE 'employee//type')
+FROM employee
+WHERE manager_employee_number=1019
+UNION
+SELECT first_name
+      ,last_name
+      ,'manager'
+FROM employee
+WHERE employee_number=1019
+ORDER BY 2;
+
+
+SELECT manager_employee_number
+FROM employee
+INTERSECT
+SELECT manager_employee_number
+FROM department
+ORDER BY 1;
+
+SELECT manager_employee_number
+FROM department
+EXCEPT
+SELECT manager_employee_number
+FROM employee
+ORDER BY 1;
